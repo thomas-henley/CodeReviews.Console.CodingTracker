@@ -28,9 +28,9 @@ public class SpectreValidation(IConfiguration config)
         return ValidationResult.Success();
     }
 
-    public ValidationResult EndTime(string startTime, string endTime)
+    public ValidationResult EndTime(string start, string end)
     {
-        if (String.Compare(startTime, endTime) > 0)
+        if (String.Compare(start, end) > 0)
         {
             return ValidationResult.Error(Red("End time cannot be before start time."));
         }
@@ -38,14 +38,14 @@ public class SpectreValidation(IConfiguration config)
         return ValidationResult.Success();
     }
 
-    public ValidationResult Year(string year)
+    public ValidationResult Year(string yearStr)
     {
-        if (year.Length != 4)
+        if (yearStr.Length != 4)
         {
             return ValidationResult.Error(Red("Invalid format."));
         }
 
-        if (int.TryParse(year, out int yearInt))
+        if (int.TryParse(yearStr, out int yearInt))
         {
             if (yearInt > DateTime.Now.Year)
                 return ValidationResult.Error(Red("Year cannot be in the future."));
@@ -57,10 +57,10 @@ public class SpectreValidation(IConfiguration config)
         }
     }
 
-    public ValidationResult Month(string month)
+    public ValidationResult Month(string monthStr)
     {
         bool valid = DateTime.TryParseExact(
-            month,
+            monthStr,
             "yyyy-MM",
             CultureInfo.InvariantCulture,
             DateTimeStyles.None,
@@ -99,7 +99,7 @@ public class SpectreValidation(IConfiguration config)
         return ValidationResult.Success();
     }
 
-    public ValidationResult Id(int id)
+    public ValidationResult PositiveId(int id)
     {
         if (id < 0)
         {

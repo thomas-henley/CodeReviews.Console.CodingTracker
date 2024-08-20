@@ -134,7 +134,7 @@ public class SpectreConsole(IConfiguration config, SpectreValidation validation)
     public int EditSessionSelectionMenu()
     {
         var prompt = new TextPrompt<int>("ID of session to edit (or 0 to exit):")
-            .Validate<int>(_validation.Id);
+            .Validate<int>(_validation.PositiveId);
 
         int id = AnsiConsole.Prompt(prompt);
 
@@ -164,7 +164,7 @@ public class SpectreConsole(IConfiguration config, SpectreValidation validation)
     public int DeleteSessionSelectionMenu()
     {
         var prompt = new TextPrompt<int>("ID of session to delete (or 0 to exit):")
-            .Validate<int>(_validation.Id);
+            .Validate<int>(_validation.PositiveId);
 
         int id = AnsiConsole.Prompt(prompt);
 

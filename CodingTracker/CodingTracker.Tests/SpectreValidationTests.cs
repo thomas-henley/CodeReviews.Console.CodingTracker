@@ -101,10 +101,10 @@ public class SpectreValidationTests
     }
 
     [TestMethod()]
-    public void IdTest()
+    public void PositiveIdTest()
     {
-        Assert.IsFalse(_validation.Id(-1).Successful);
-        Assert.IsTrue(_validation.Id(0).Successful);
-        Assert.IsTrue(_validation.Id(1).Successful);
+        Assert.IsFalse(_validation.PositiveId(-1).Successful);
+        Assert.IsTrue(_validation.PositiveId(0).Successful);
+        Assert.IsTrue(_validation.PositiveId(1).Successful);
     }
 }
