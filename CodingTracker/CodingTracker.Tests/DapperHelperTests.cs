@@ -130,6 +130,43 @@ public class DapperHelperTests
         }
     }
 
+    [TestMethod()]
+    public void GetSessionsByYearTest()
+    {
+        _dapper.Insert(new CodingSession("2021-01-01 10:00", "2021-01-01 12:00"));
+        _dapper.Insert(new CodingSession("2022-01-01 10:00", "2022-01-01 12:00"));
+        _dapper.Insert(new CodingSession("2022-02-02 10:00", "2022-02-02 12:00"));
+
+        Assert.AreEqual(0, _dapper.GetSessionsByYear("2020").Count);
+        Assert.AreEqual(1, _dapper.GetSessionsByYear("2021").Count);
+        Assert.AreEqual(2, _dapper.GetSessionsByYear("2022").Count);
+    }
+
+    [TestMethod()]
+    public void GetSessionsByMonthTest()
+    {
+        _dapper.Insert(new CodingSession("2022-01-01 10:00", "2021-01-01 12:00"));
+        _dapper.Insert(new CodingSession("2022-02-01 10:00", "2022-02-01 12:00"));
+        _dapper.Insert(new CodingSession("2022-02-02 10:00", "2022-02-02 12:00"));
+
+        Assert.AreEqual(0, _dapper.GetSessionsByMonth("2022-03").Count);
+        Assert.AreEqual(1, _dapper.GetSessionsByMonth("2022-01").Count);
+        Assert.AreEqual(2, _dapper.GetSessionsByMonth("2022-02").Count);
+    }
+
+    [TestMethod()]
+    public void GetSessionByDurationTest()
+    {
+        _dapper.Insert(new CodingSession("2022-01-01 10:00", "2022-01-01 11:00"));
+        _dapper.Insert(new CodingSession("2022-02-01 10:00", "2022-02-01 12:00"));
+        _dapper.Insert(new CodingSession("2022-02-02 10:00", "2022-02-02 13:00"));
+
+        Assert.AreEqual(0, _dapper.GetSessionsByDuration(0, 59).Count);
+        Assert.AreEqual(1, _dapper.GetSessionsByDuration(0, 90).Count);
+        Assert.AreEqual(2, _dapper.GetSessionsByDuration(60, 120).Count);
+        Assert.AreEqual(3, _dapper.GetSessionsByDuration(0, 1000000).Count);
+    }
+
     // UPDATE TESTS
 
     [TestMethod()]
@@ -198,5 +235,20 @@ public class DapperHelperTests
 
         Assert.IsTrue(_dapper.DeleteSessionById(1));
         Assert.IsFalse(_dapper.TryGetSession(1, out _));
+    }
+
+    [TestMethod()]
+    public void DeleteAllSessionsTest()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            _dapper.Insert(TestSessionA());
+            _dapper.Insert(TestSessionB());
+            _dapper.Insert(TestSessionC());
+        }
+
+        Assert.AreEqual(15, GetRecordCount());
+        Assert.IsTrue(_dapper.DeleteAllSessions());
+        Assert.AreEqual(0, GetRecordCount());
     }
 }

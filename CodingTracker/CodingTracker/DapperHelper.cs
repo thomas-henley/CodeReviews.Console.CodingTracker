@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
-using System.Text;
 
 namespace CodingTracker;
 
@@ -16,6 +15,8 @@ public class DapperHelper
         _config = config;
         _table = config["TableName"] ?? "CodingSessions";
         _connection = new SqliteConnection(_config.GetConnectionString("SQLite"));
+
+        InitializeDb();
     }
 
     public void InitializeDb()
@@ -28,6 +29,12 @@ public class DapperHelper
                     );";
 
         _connection.Execute(sql);
+
+        if (_config["UseExampleData"] is not null and "True")
+        {
+            DeleteAllSessions();
+            PopulateDb();
+        }
     }
 
     public bool IsTableCreated()
@@ -40,6 +47,24 @@ public class DapperHelper
 
         var res = _connection.ExecuteScalar<int>(sql, parameters);
         return res > 0;
+    }
+
+    public void PopulateDb()
+    {
+        Random rand = new();
+        DateTime startTime = new(2023, 1, 1);
+        for (int i = 0; i < 100; i++)
+        {
+            startTime = startTime.AddDays(rand.Next(4));
+            int hour = rand.Next(7, 20);
+            int minute = rand.Next(60);
+            startTime = startTime.AddHours(hour);
+            startTime = startTime.AddMinutes(minute);
+
+            var endTime = startTime.AddMinutes(rand.Next(240));
+            Console.WriteLine("Adding session...");
+            Insert(new CodingSession(startTime, endTime));
+        }
     }
 
     public void TeardownDB()
@@ -75,6 +100,27 @@ public class DapperHelper
         return _connection.Query<CodingSession>(sql).ToList();
     }
 
+    public List<CodingSession> GetSessionsByYear(string year)
+    {
+        var sql = $"SELECT * FROM {_table} WHERE StartTime LIKE @Year";
+
+        return _connection.Query<CodingSession>(sql, new { Year = $"{year}%" }).ToList();
+    }
+
+    public List<CodingSession> GetSessionsByMonth(string month)
+    {
+        var sql = $"SELECT * FROM {_table} WHERE StartTime LIKE @Month";
+
+        return _connection.Query<CodingSession>(sql, new { Month = $"{month}%" }).ToList();
+    }
+
+    public List<CodingSession> GetSessionsByDuration(int min, int max)
+    {
+        var sql = $"SELECT * FROM {_table} WHERE Duration BETWEEN @min AND @max;";
+
+        return _connection.Query<CodingSession>(sql, new { min, max }).ToList();
+    }
+
     // UPDATE
     public bool UpdateSession(CodingSession session)
     {
@@ -99,5 +145,14 @@ public class DapperHelper
         var sql = $"DELETE FROM {_table} WHERE Id = @Id;";
         var parameters = new { Id = id };
         return _connection.Execute(sql, parameters) == 1;
+    }
+
+    public bool DeleteAllSessions()
+    {
+        var sql = $"DELETE FROM {_table};";
+
+        _connection.Execute(sql);
+
+        return GetAllSessions().Count == 0;
     }
 }

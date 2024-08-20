@@ -7,8 +7,10 @@ IConfiguration config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", true, true)
     .Build();
 
-Console.WriteLine("ConnectionString: {0}", config.GetConnectionString("SQLite"));
+DapperHelper dapper = new(config);
 
-DapperHelper dapper = new DapperHelper(config);
+SpectreValidation validation = new(config);
+SpectreConsole console = new(config, validation);
 
-dapper.InitializeDb();
+CodingController controller = new(config, dapper, console);
+controller.Run();

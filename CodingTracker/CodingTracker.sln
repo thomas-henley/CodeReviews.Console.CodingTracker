@@ -5,7 +5,12 @@ VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodingTracker", "CodingTracker\CodingTracker.csproj", "{6AB4CC5F-4A1C-48E8-A685-43225267C50F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodingTracker.Tests", "CodingTracker.Tests\CodingTracker.Tests.csproj", "{B3532919-3EE6-4E68-B3AE-E3EC88357F13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodingTracker.Tests", "CodingTracker.Tests\CodingTracker.Tests.csproj", "{B3532919-3EE6-4E68-B3AE-E3EC88357F13}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5EE0F877-6D56-4BB6-8C76-3E073DE89DC4}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

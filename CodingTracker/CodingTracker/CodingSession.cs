@@ -17,7 +17,14 @@ public class CodingSession
     {
         StartTime = start;
         EndTime = end;
-        SaveDuration();
+        Duration = CalculateDurationMinutes();
+    }
+
+    public CodingSession(DateTime start, DateTime end)
+    {
+        StartTime = start.ToString("yyyy-MM-dd HH:mm");
+        EndTime = end.ToString("yyyy-MM-dd HH:mm");
+        Duration = CalculateDurationMinutes();
     }
 
     public DateTime GetStartDateTime()

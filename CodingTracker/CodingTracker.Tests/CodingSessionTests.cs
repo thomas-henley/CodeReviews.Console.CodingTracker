@@ -1,4 +1,7 @@
-﻿namespace CodingTracker.Tests;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using CodingTracker;
+
+namespace CodingTracker.Tests;
 
 [TestClass()]
 public class CodingSessionTests
@@ -9,6 +12,16 @@ public class CodingSessionTests
     public void Setup()
     {
         _session = new CodingSession() { StartTime = "2024-08-16 20:00", EndTime = "2024-08-16 22:10" };
+    }
+
+    [TestMethod()]
+    public void ParamConstructorTest()
+    {
+        var session = new CodingSession("2024-08-16 20:00", "2024-08-16 22:10");
+        Assert.AreEqual(0, session.Id);
+        Assert.AreEqual("2024-08-16 20:00", session.StartTime);
+        Assert.AreEqual("2024-08-16 22:10", session.EndTime);
+        Assert.AreEqual(130, session.Duration);
     }
 
     [TestMethod()]
@@ -42,7 +55,7 @@ public class CodingSessionTests
     [TestMethod()]
     public void SaveDurationTest()
     {
-        Assert.AreEqual(0,  _session.Duration);
+        Assert.AreEqual(0, _session.Duration);
         _session.SaveDuration();
         Assert.AreEqual(130, _session.Duration);
     }
